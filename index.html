@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>David & Marisodelys · Nuestra boda</title>
+  <meta name="description" content="Invitación a la boda de David & Marisodelys · 16 de enero de 2027">
+  <meta property="og:title" content="David & Marisodelys · Nuestra boda">
+  <meta property="og:description" content="Sábado 16 de enero de 2027 · Tu invitación">
+  <meta name="theme-color" content="#fbf9f1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --crema: #fbf9f1;
+      --crema-2: #f3f1e6;
+      --tinta: #1e2723;
+      --verde: #2f4a43;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      background:
+        radial-gradient(ellipse at 15% 10%, rgba(169,191,177,.28), transparent 55%),
+        radial-gradient(ellipse at 90% 95%, rgba(169,191,177,.30), transparent 55%),
+        var(--crema);
+      color: var(--tinta);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      overflow: hidden;
+    }
+
+    /* ---------- Ramas de eucalipto decorativas ---------- */
+    .rama { position: fixed; pointer-events: none; z-index: 0; width: 230px; height: auto; opacity: .95; }
+    .rama.arriba { top: -30px; left: -40px; transform: rotate(8deg); }
+    .rama.abajo  { bottom: -40px; right: -45px; transform: rotate(188deg); }
+    .rama.lado   { top: 38%; right: -70px; width: 150px; transform: rotate(-110deg); opacity: .55; }
+    .destellos { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+
+    /* ---------- Presentación centrada en la pantalla ---------- */
+    #vPresentacion {
+      position: relative; z-index: 1;
+      height: 100vh; height: 100dvh; padding: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .marco { position: relative; aspect-ratio: 2 / 3;
+             width: min(100%, calc((100vh - 32px) * 2 / 3)); width: min(100%, calc((100dvh - 32px) * 2 / 3));
+             border-radius: 14px; overflow: hidden;
+             background: var(--crema-2); box-shadow: 0 10px 30px rgba(30,39,35,.15); }
+    .marco iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+
+    /* ---------- Sobre (animación de apertura) ---------- */
+    #vSobre {
+      position: fixed; inset: 0; z-index: 8;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px;
+      padding: 24px; transition: opacity .7s ease, transform .7s ease, visibility .7s;
+    }
+    #vSobre.fuera { opacity: 0; transform: scale(1.08); visibility: hidden; }
+    .sobre {
+      position: relative; width: min(340px, 82vw); aspect-ratio: 1.45; cursor: pointer;
+      perspective: 900px; filter: drop-shadow(0 14px 24px rgba(30,39,35,.25));
+      animation: flotar 3s ease-in-out infinite;
+    }
+    .sobre:focus-visible { outline: 2px solid #c9a45c; outline-offset: 8px; border-radius: 6px; }
+    .sobre > * { position: absolute; }
+    .fondo   { inset: 0; background: #3e5f58; border-radius: 6px; }
+    .carta {
+      left: 7%; right: 7%; top: 8%; height: 84%; z-index: 2;
+      background: #fbf9f1; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.12);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-family: 'Great Vibes', cursive; color: #2f4a43; text-align: center;
+      transition: transform .9s cubic-bezier(.2,.8,.2,1) .45s;
+    }
+    .carta b { font-weight: 400; font-size: clamp(22px, 7vw, 30px); line-height: 1.1; }
+    .carta small { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 11px; letter-spacing: .25em;
+                   color: #5f6b64; margin-top: 6px; }
+    .bolsillo {
+      inset: 0; z-index: 3; border-radius: 6px; background: #4a6d65;
+      clip-path: polygon(0 0, 50% 57%, 100% 0, 100% 100%, 0 100%);
+    }
+    .bolsillo::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 58%;
+      background: #52766e; clip-path: polygon(0 100%, 50% 8%, 100% 100%); border-radius: 0 0 6px 6px;
+    }
+    .solapa {
+      left: 0; right: 0; top: 0; height: 58%; z-index: 4;
+      background: #36544e; clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top; transition: transform .7s ease, z-index 0s .35s;
+    }
+    .sello {
+      left: 50%; top: 58%; z-index: 5; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: radial-gradient(circle at 35% 30%, #f1d58f, #c9a45c 55%, #9c7a35);
+      box-shadow: 0 3px 8px rgba(0,0,0,.3), inset 0 0 0 3px rgba(255,255,255,.18);
+      font-family: 'Great Vibes', cursive; font-size: 22px; color: #6b5220;
+      transition: opacity .3s ease, transform .3s ease;
+    }
+    .flores { left: 50%; top: 58%; z-index: 4; width: 90px; margin: -62px 0 0 -14px; pointer-events: none;
+              transition: opacity .3s ease; }
+    .indicacion { margin: 0; font-size: 20px; font-style: italic; color: #2f4a43; text-align: center;
+                  transition: opacity .3s ease; }
+    #vSobre.abierto .sobre { animation: none; }
+    #vSobre.abierto .solapa { transform: rotateX(180deg); z-index: 1; }
+    #vSobre.abierto .sello, #vSobre.abierto .flores { opacity: 0; transform: scale(.6); }
+    #vSobre.abierto .carta { transform: translateY(-82%); }
+    #vSobre.abierto .indicacion { opacity: 0; }
+    @keyframes flotar { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+    #vPresentacion.entrando .marco { animation: entrar .8s ease both; }
+    @keyframes entrar { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+
+    /* ---------- Confirmación (página de Google) a pantalla completa ---------- */
+    #confirmar { position: fixed; inset: 0; z-index: 5; width: 100%; height: 100%; border: 0; background: var(--crema); }
+
+    /* ---------- Botón de música ---------- */
+    #musica {
+      position: fixed; z-index: 20; left: 14px; bottom: 14px;
+      bottom: calc(14px + env(safe-area-inset-bottom));
+      height: 46px; min-width: 46px; padding: 0 12px; border-radius: 999px; border: 0;
+      background: rgba(47,74,67,.9); color: #fff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.2);
+      font: 600 16px 'Cormorant Garamond', Georgia, serif;
+    }
+    #musica svg { width: 22px; height: 22px; flex: none; }
+    #musica .texto { display: none; }
+    #musica.invitar { padding: 0 16px 0 14px; animation: llamar 1.8s ease-in-out infinite; }
+    #musica.invitar .texto { display: inline; }
+    #musica.sonando .icono { animation: girar 3s linear infinite; }
+    #musica .tachado { display: none; position: absolute; }
+    #musica.pausada:not(.invitar) .tachado { display: block; }
+    @keyframes llamar { 0%,100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+    @keyframes girar { to { transform: rotate(360deg); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      #musica.invitar, #musica.sonando .icono, .sobre { animation: none; }
+      .solapa, .carta, #vSobre { transition-duration: .01s; }
+    }
+    @media (max-width: 420px) {
+      .rama { width: 170px; }
+      .rama.lado { display: none; }
+    }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Rama de eucalipto (se reutiliza 3 veces) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="hojaA" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#c3d3c7"/><stop offset="1" stop-color="#8fae9d"/>
+      </linearGradient>
+      <linearGradient id="hojaB" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0" stop-color="#7d9c8c"/><stop offset="1" stop-color="#b5c9bb"/>
+      </linearGradient>
+      <symbol id="eucalipto" viewBox="0 0 240 300">
+        <path d="M30 10 C 70 80, 95 150, 150 290" fill="none" stroke="#8a9c8f" stroke-width="2.2" stroke-linecap="round"/>
+        <g opacity=".92">
+          <ellipse cx="44" cy="40"  rx="20" ry="13" fill="url(#hojaA)" transform="rotate(-35 44 40)"/>
+          <ellipse cx="72" cy="52"  rx="22" ry="14" fill="url(#hojaB)" transform="rotate(25 72 52)"/>
+          <ellipse cx="58" cy="88"  rx="24" ry="15" fill="url(#hojaA)" transform="rotate(-40 58 88)"/>
+          <ellipse cx="96" cy="100" rx="25" ry="16" fill="url(#hojaB)" transform="rotate(20 96 100)"/>
+          <ellipse cx="80" cy="138" rx="26" ry="17" fill="url(#hojaB)" transform="rotate(-45 80 138)"/>
+          <ellipse cx="120" cy="150" rx="26" ry="17" fill="url(#hojaA)" transform="rotate(15 120 150)"/>
+          <ellipse cx="104" cy="190" rx="27" ry="18" fill="url(#hojaA)" transform="rotate(-50 104 190)"/>
+          <ellipse cx="146" cy="202" rx="27" ry="18" fill="url(#hojaB)" transform="rotate(10 146 202)"/>
+          <ellipse cx="126" cy="242" rx="26" ry="17" fill="url(#hojaB)" transform="rotate(-55 126 242)"/>
+          <ellipse cx="168" cy="252" rx="24" ry="16" fill="url(#hojaA)" transform="rotate(5 168 252)"/>
+        </g>
+        <g fill="none" stroke="#ffffff" stroke-opacity=".35" stroke-width="1">
+          <path d="M30 32 L58 48"/><path d="M60 46 L86 58"/><path d="M40 96 L76 80"/>
+          <path d="M80 96 L112 104"/><path d="M60 148 L100 128"/><path d="M104 146 L138 154"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+  <svg class="rama arriba" viewBox="0 0 240 300" aria-hidden="true"><use href="#eucalipto"/></svg>
+  <svg class="rama abajo"  viewBox="0 0 240 300" aria-hidden="true"><use href="#eucalipto"/></svg>
+  <svg class="rama lado"   viewBox="0 0 240 300" aria-hidden="true"><use href="#eucalipto"/></svg>
+  <svg class="destellos" aria-hidden="true">
+    <g fill="#c9a45c">
+      <circle cx="12%" cy="22%" r="2.2" opacity=".55"/><circle cx="86%" cy="14%" r="1.6" opacity=".5"/>
+      <circle cx="78%" cy="38%" r="2.6" opacity=".35"/><circle cx="18%" cy="62%" r="1.8" opacity=".45"/>
+      <circle cx="9%"  cy="84%" r="2.4" opacity=".35"/><circle cx="64%" cy="88%" r="1.5" opacity=".5"/>
+      <circle cx="92%" cy="66%" r="2"   opacity=".4"/><circle cx="35%" cy="8%"  r="1.4" opacity=".45"/>
+    </g>
+  </svg>
+
+  <!-- Sobre -->
+  <section id="vSobre" hidden>
+    <div class="sobre" id="sobre" role="button" tabindex="0" aria-label="Abrir tu invitación">
+      <div class="fondo"></div>
+      <div class="carta"><b>David &amp;<br>Marisodelys</b><small>16 · 01 · 2027</small></div>
+      <div class="bolsillo"></div>
+      <div class="solapa"></div>
+      <svg class="flores" viewBox="0 0 90 70" aria-hidden="true">
+        <g stroke="#a7b39b" stroke-width="1" fill="none"><path d="M14 66 C 20 40, 30 26, 46 10"/><path d="M14 66 C 26 50, 44 40, 70 30"/><path d="M14 66 C 18 48, 14 30, 20 14"/></g>
+        <g fill="#fffdf6" stroke="#e7e1cf" stroke-width=".6">
+          <circle cx="46" cy="10" r="4"/><circle cx="52" cy="14" r="3"/><circle cx="41" cy="15" r="3"/>
+          <circle cx="70" cy="30" r="4"/><circle cx="64" cy="26" r="3"/><circle cx="75" cy="25" r="2.6"/>
+          <circle cx="20" cy="14" r="3.6"/><circle cx="25" cy="19" r="2.6"/><circle cx="16" cy="20" r="2.6"/>
+          <circle cx="32" cy="28" r="2.6"/><circle cx="57" cy="36" r="2.4"/>
+        </g>
+      </svg>
+      <div class="sello" aria-hidden="true">D&amp;M</div>
+    </div>
+    <p class="indicacion">Toca el sobre para abrir tu invitación</p>
+  </section>
+
+  <!-- Presentación de Canva -->
+  <section id="vPresentacion" hidden>
+    <div class="marco"><iframe id="canva" title="Invitación" allowfullscreen allow="fullscreen"></iframe></div>
+  </section>
+
+  <!-- Confirmación (página de Google Apps Script) -->
+  <iframe id="confirmar" title="Confirmar asistencia" hidden></iframe>
+
+  <!-- Botón de música -->
+  <button id="musica" aria-label="Reproducir música" hidden>
+    <svg class="icono" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>
+    </svg>
+    <svg class="tachado" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 4 L20 20" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+    <span class="texto">Música</span>
+  </button>
+  <audio id="cancion" src="cancion.mp3" loop preload="auto"></audio>
+
+<script>
+  // ====== CONFIGURACIÓN ======
+  // Presentación de Canva (link público, termina en /watch o /view).
+  const CANVA_URL = 'https://www.canva.com/design/DAHWWaOa-sQ/0DiQgV9iedVQ74QAtR65uQ/watch';
+  // Página de confirmación en Google Apps Script (termina en /exec).
+  const APP_URL = 'https://script.google.com/macros/s/AKfycbxYcdKdHtAxquQ2PXg7A2iVrUn71HgAjbUK1yEKO31lGw8oFMrg780nBQlDOeSdjF-2Jw/exec';
+  const VOLUMEN = 0.6;
+  // ===========================
+
+  const $ = id => document.getElementById(id);
+
+  // ---------- ¿Quién es? ----------
+  // El link del sobre trae ?inv=CODIGO. Se guarda en este navegador para que,
+  // al tocar "Confirmar asistencia" en la presentación, sepamos qué familia es.
+  const CLAVE = 'boda_codigo';
+  const limpiar = v => String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 12);
+  const desdeLink = limpiar(new URLSearchParams(location.search).get('inv'));
+  const guardar = c => { try { localStorage.setItem(CLAVE, c); } catch (e) {} };
+  const guardado = () => { try { return limpiar(localStorage.getItem(CLAVE)); } catch (e) { return ''; } };
+
+  function urlCanva(u) {
+    const m = String(u).match(/^https:\/\/(www\.)?canva\.com\/design\/[^?#]+/);
+    return m ? m[0].replace(/\/(edit|watch|view)\/?$/, '') + '/view?embed' : '';
+  }
+
+  if (desdeLink) {
+    // Llegó desde el sobre: mostrar la presentación.
+    guardar(desdeLink);
+    $('canva').src = urlCanva(CANVA_URL);   // se va cargando mientras ven el sobre
+    $('vSobre').hidden = false;
+    let abierto = false;
+    const abrir = () => {
+      if (abierto) return;
+      abierto = true;
+      reproducir();                          // el toque permite que suene la música
+      $('vSobre').classList.add('abierto');
+      setTimeout(() => {
+        $('vPresentacion').hidden = false;
+        $('vPresentacion').classList.add('entrando');
+        $('vSobre').classList.add('fuera');
+        boton.hidden = !hayMusica;
+      }, 1500);
+      setTimeout(() => { $('vSobre').hidden = true; }, 2300);
+    };
+    $('sobre').addEventListener('click', abrir);
+    $('sobre').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } });
+  } else {
+    // Llegó desde el botón "Confirmar asistencia" de la presentación: mostrar la confirmación.
+    const codigo = guardado();
+    $('confirmar').src = APP_URL + (codigo ? '?inv=' + encodeURIComponent(codigo) : '');
+    $('confirmar').hidden = false;
+  }
+
+  // ---------- Música ----------
+  const audio = $('cancion');
+  const boton = $('musica');
+  let hayMusica = true;
+  audio.addEventListener('error', () => { hayMusica = false; boton.hidden = true; });
+
+  function pintarBoton() {
+    const sonando = !audio.paused;
+    boton.classList.toggle('sonando', sonando);
+    boton.classList.toggle('pausada', !sonando);
+    boton.setAttribute('aria-label', sonando ? 'Pausar música' : 'Reproducir música');
+  }
+  function reproducir() {
+    if (!hayMusica) return;
+    audio.volume = 0;
+    const p = audio.play();
+    if (p && p.catch) p.catch(() => { boton.classList.add('invitar'); pintarBoton(); });
+    let v = 0;
+    const t = setInterval(() => {               // sube el volumen suavemente
+      v = Math.min(VOLUMEN, v + 0.05);
+      audio.volume = v;
+      if (v >= VOLUMEN) clearInterval(t);
+    }, 120);
+  }
+  audio.addEventListener('play', () => { boton.classList.remove('invitar'); pintarBoton(); });
+  audio.addEventListener('pause', pintarBoton);
+  boton.addEventListener('click', () => { audio.paused ? reproducir() : audio.pause(); });
+
+  pintarBoton();
+  // En la confirmación el botón se ve desde el inicio; en la invitación aparece al abrir el sobre.
+  if (!desdeLink) boton.hidden = !hayMusica;
+</script>
+</body>
+</html>
