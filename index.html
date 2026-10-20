@@ -99,18 +99,11 @@
       clip-path: polygon(0 0, 100% 0, 50% 100%);
     }
     .sello {
-      left: 50%; top: 58%; z-index: 6; width: 64px; height: 62px; margin: -31px 0 0 -32px;
-      border-radius: 49% 51% 47% 53% / 52% 47% 53% 48%;
-      display: grid; place-items: center;
-      background:
-        radial-gradient(circle at 50% 50%, transparent 52%, rgba(120,88,30,.55) 54%, transparent 60%),
-        radial-gradient(circle at 34% 28%, #fbe7a8 0%, #e2bf6a 28%, #c99a3e 58%, #9a7128 100%);
-      box-shadow: 0 3px 7px rgba(0,0,0,.35), inset 0 -2px 4px rgba(90,60,10,.35), inset 0 2px 3px rgba(255,245,210,.5);
-      font-family: 'Great Vibes', cursive; font-size: 21px; color: #7a5a1c;
-      text-shadow: 0 1px 0 rgba(255,240,200,.6), 0 -1px 0 rgba(90,60,10,.35);
+      left: 50%; top: 58%; z-index: 6; width: 76px; height: 76px; margin: -38px 0 0 -38px;
+      overflow: visible; filter: drop-shadow(0 3px 4px rgba(0,0,0,.35));
       transition: opacity .35s ease, transform .35s ease;
     }
-    .flores { left: 50%; top: 58%; z-index: 5; width: 74px; margin: -66px 0 0 -30px; pointer-events: none;
+    .flores { left: 50%; top: 58%; z-index: 5; width: 84px; margin: -82px 0 0 -40px; pointer-events: none;
               transition: opacity .35s ease, transform .35s ease; }
     .indicacion {
       position: absolute; left: 0; right: 0; top: calc(50% + var(--hs) / 2 + 6px); margin: 0; padding: 0 24px;
@@ -289,7 +282,26 @@
         </g>
         <g fill="#f3e9cf"><circle cx="18" cy="17" r="1"/><circle cx="36" cy="9" r="1"/><circle cx="56" cy="19" r="1"/></g>
       </svg>
-      <div class="sello latido" aria-hidden="true">D&amp;M</div>
+      <svg class="sello latido" viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <radialGradient id="cera" cx="35%" cy="30%" r="75%">
+            <stop offset="0" stop-color="#fbe7aa"/><stop offset=".35" stop-color="#e3bd66"/>
+            <stop offset=".7" stop-color="#c3943b"/><stop offset="1" stop-color="#8c6322"/>
+          </radialGradient>
+          <radialGradient id="disco" cx="40%" cy="35%" r="70%">
+            <stop offset="0" stop-color="#f1d58e"/><stop offset=".6" stop-color="#d4aa52"/><stop offset="1" stop-color="#b48535"/>
+          </radialGradient>
+        </defs>
+        <path d="M96.8 50.0 C96.3 52.0 94.4 53.8 94.1 55.8 C93.8 57.8 95.6 60.2 95.1 62.1 C94.5 63.9 91.6 65.0 90.8 66.9 C89.9 68.7 90.8 71.3 90.0 73.1 C89.2 74.9 87.5 76.3 86.0 77.6 C84.6 79.0 82.3 79.5 81.2 81.2 C80.0 82.8 80.5 86.6 79.0 87.8 C77.5 88.9 73.9 87.3 72.0 88.1 C70.1 88.8 69.3 91.5 67.5 92.2 C65.7 93.0 63.4 92.3 61.4 92.6 C59.5 92.9 57.7 93.3 55.8 93.8 C53.9 94.3 52.0 95.1 50.0 95.7 C48.0 96.2 45.8 97.2 43.8 97.0 C41.8 96.8 39.9 95.3 38.1 94.4 C36.3 93.4 34.8 92.0 32.9 91.4 C31.0 90.7 28.7 90.9 26.7 90.3 C24.7 89.8 22.4 89.3 20.8 88.1 C19.2 86.8 18.4 84.5 17.2 82.8 C16.1 81.0 15.3 79.2 13.9 77.7 C12.4 76.3 9.3 75.8 8.3 74.0 C7.3 72.3 8.6 69.4 7.9 67.5 C7.1 65.5 4.5 64.2 4.0 62.3 C3.6 60.4 5.1 57.9 5.3 55.9 C5.6 53.8 5.4 51.9 5.6 50.0 C5.7 48.1 5.9 46.2 6.1 44.2 C6.2 42.3 6.4 40.4 6.4 38.3 C6.4 36.3 5.6 33.8 6.2 31.9 C6.8 30.0 8.8 28.6 10.0 26.9 C11.2 25.2 12.0 23.4 13.2 21.8 C14.4 20.1 15.5 18.3 17.0 17.0 C18.6 15.7 20.7 15.1 22.3 14.0 C24.0 12.8 25.1 10.8 26.9 10.0 C28.7 9.2 31.2 9.7 33.1 9.3 C35.1 8.9 36.8 8.3 38.6 7.4 C40.4 6.6 42.1 4.8 44.0 4.1 C45.9 3.4 48.0 3.1 50.0 3.2 C52.0 3.3 54.0 4.2 56.0 4.7 C57.9 5.2 59.7 5.9 61.7 6.4 C63.7 6.8 65.9 6.5 67.7 7.2 C69.6 7.8 71.3 9.2 72.9 10.3 C74.5 11.5 75.5 13.4 77.5 14.2 C79.4 15.1 83.0 14.2 84.6 15.4 C86.2 16.6 86.5 19.4 87.2 21.5 C87.9 23.5 87.9 25.8 88.9 27.6 C89.8 29.4 91.9 30.5 92.8 32.3 C93.7 34.0 93.8 36.1 94.5 38.1 C95.3 40.0 96.9 41.8 97.2 43.8 C97.6 45.8 97.4 48.0 96.8 50.0Z" fill="url(#cera)"/>
+        <circle cx="50" cy="50" r="35" fill="url(#disco)" stroke="#9c7428" stroke-width="1.6"/>
+        <circle cx="50" cy="50" r="35" fill="none" stroke="#fff2c8" stroke-opacity=".55" stroke-width=".7" transform="translate(-.6 -.6)"/>
+        <circle cx="50" cy="50" r="31" fill="none" stroke="#9c7428" stroke-opacity=".7" stroke-width=".6"/>
+        <g fill="#a57c2e" opacity=".85"><ellipse cx="58.3" cy="75.7" rx="3.6" ry="1.5" transform="rotate(127 58.3 75.7)"/><ellipse cx="66.6" cy="71.3" rx="3.6" ry="1.5" transform="rotate(107 66.6 71.3)"/><ellipse cx="72.9" cy="64.3" rx="3.6" ry="1.5" transform="rotate(87 72.9 64.3)"/><ellipse cx="76.4" cy="55.6" rx="3.6" ry="1.5" transform="rotate(67 76.4 55.6)"/><ellipse cx="76.7" cy="46.2" rx="3.6" ry="1.5" transform="rotate(47 76.7 46.2)"/><ellipse cx="73.8" cy="37.3" rx="3.6" ry="1.5" transform="rotate(27 73.8 37.3)"/><ellipse cx="41.7" cy="75.7" rx="3.6" ry="1.5" transform="rotate(233 41.7 75.7)"/><ellipse cx="33.4" cy="71.3" rx="3.6" ry="1.5" transform="rotate(253 33.4 71.3)"/><ellipse cx="27.1" cy="64.3" rx="3.6" ry="1.5" transform="rotate(273 27.1 64.3)"/><ellipse cx="23.6" cy="55.6" rx="3.6" ry="1.5" transform="rotate(293 23.6 55.6)"/><ellipse cx="23.3" cy="46.2" rx="3.6" ry="1.5" transform="rotate(313 23.3 46.2)"/><ellipse cx="26.2" cy="37.3" rx="3.6" ry="1.5" transform="rotate(333 26.2 37.3)"/></g>
+        <text x="50.6" y="57.6" text-anchor="middle" textLength="36" lengthAdjust="spacingAndGlyphs"
+              font-family="'Great Vibes', cursive" font-size="24" fill="#fff0c4" opacity=".6">D&amp;M</text>
+        <text x="50" y="57" text-anchor="middle" textLength="36" lengthAdjust="spacingAndGlyphs"
+              font-family="'Great Vibes', cursive" font-size="24" fill="#7a5718">D&amp;M</text>
+      </svg>
     </div>
     <p class="indicacion">Toca el sobre para abrir tu invitación</p>
   </section>
@@ -377,7 +389,7 @@
     </svg>
     <span class="texto">Música</span>
   </button>
-  <audio id="cancion" src="cancion.mp3" loop preload="auto"></audio>
+  <audio id="cancion" src="cancion.mp3" preload="auto"></audio>
 
 <script>
   // ====== CONFIGURACIÓN ======
@@ -386,7 +398,10 @@
   // Servicio de datos en Google Apps Script (termina en /exec).
   const APP_URL = 'https://script.google.com/macros/s/AKfycbwYYhtQJTb6dUdgXTDaQfia_DJj1nnMypL6fsNmPPrxfgDzDMWzFWQC6aUbnBoOPW3uiA/exec';
   const FECHA = 'sábado 16 de enero de 2027';
-  const VOLUMEN = 0.6;
+  // Música: fragmento que suena en bucle (en segundos) y volumen (1 = 100 %, 1.38 = 138 %).
+  const INICIO = 16;      // 0:16
+  const FIN = 98;         // 0:16 + 1:22 de duración = 1:38
+  const VOLUMEN = 1.38;
   // ===========================
 
   const $ = id => document.getElementById(id);
@@ -412,18 +427,51 @@
     boton.classList.toggle('pausada', !sonando);
     boton.setAttribute('aria-label', sonando ? 'Pausar música' : 'Reproducir música');
   }
+  // Volumen por encima de 100 %: se amplifica con Web Audio (el volumen normal llega solo hasta 100 %).
+  let ctxAudio = null, ganancia = null;
+  function prepararAmplificador() {
+    if (ctxAudio) return;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      ctxAudio = new AC();
+      ganancia = ctxAudio.createGain();
+      ganancia.gain.value = 0;
+      ctxAudio.createMediaElementSource(audio).connect(ganancia).connect(ctxAudio.destination);
+    } catch (e) { ctxAudio = null; ganancia = null; }
+  }
+  function subirVolumen() {                      // entra suave en ~2 segundos
+    if (ganancia) {
+      const t = ctxAudio.currentTime;
+      ganancia.gain.cancelScheduledValues(t);
+      ganancia.gain.setValueAtTime(0.0001, t);
+      ganancia.gain.linearRampToValueAtTime(VOLUMEN, t + 2);
+      audio.volume = 1;
+    } else {
+      let v = 0; audio.volume = 0;
+      const max = Math.min(1, VOLUMEN);
+      const id = setInterval(() => { v = Math.min(max, v + 0.05); audio.volume = v; if (v >= max) clearInterval(id); }, 100);
+    }
+  }
+  function irAlInicio() {
+    if (audio.readyState >= 1) audio.currentTime = INICIO;
+    else audio.addEventListener('loadedmetadata', () => { audio.currentTime = INICIO; }, { once: true });
+  }
   function reproducir() {
     if (!hayMusica) return;
-    audio.volume = 0;
+    prepararAmplificador();
+    if (ctxAudio && ctxAudio.state === 'suspended') ctxAudio.resume();
+    if (audio.currentTime < INICIO || audio.currentTime >= FIN) irAlInicio();
     const p = audio.play();
     if (p && p.catch) p.catch(() => { boton.classList.add('invitar'); pintarBoton(); });
-    let v = 0;
-    const t = setInterval(() => {               // sube el volumen suavemente
-      v = Math.min(VOLUMEN, v + 0.05);
-      audio.volume = v;
-      if (v >= VOLUMEN) clearInterval(t);
-    }, 120);
+    subirVolumen();
   }
+  // Bucle del fragmento: al llegar a FIN vuelve a INICIO.
+  function vigilarBucle() {
+    if (!audio.paused && (audio.currentTime >= FIN || audio.currentTime < INICIO - 0.5)) audio.currentTime = INICIO;
+  }
+  audio.addEventListener('timeupdate', vigilarBucle);
+  setInterval(vigilarBucle, 100);
+  audio.addEventListener('ended', () => { audio.currentTime = INICIO; audio.play(); });
   audio.addEventListener('play', () => { boton.classList.remove('invitar'); pintarBoton(); });
   audio.addEventListener('pause', pintarBoton);
   boton.addEventListener('click', () => { audio.paused ? reproducir() : audio.pause(); });
