@@ -375,7 +375,7 @@
   // Presentación de Canva (link público, termina en /watch o /view).
   const CANVA_URL = 'https://www.canva.com/design/DAHWWaOa-sQ/0DiQgV9iedVQ74QAtR65uQ/watch';
   // Servicio de datos en Google Apps Script (termina en /exec).
-  const APP_URL = 'https://script.google.com/macros/s/AKfycbxYcdKdHtAxquQ2PXg7A2iVrUn71HgAjbUK1yEKO31lGw8oFMrg780nBQlDOeSdjF-2Jw/exec';
+  const APP_URL = 'https://script.google.com/macros/s/AKfycbwYYhtQJTb6dUdgXTDaQfia_DJj1nnMypL6fsNmPPrxfgDzDMWzFWQC6aUbnBoOPW3uiA/exec';
   const FECHA = 'sábado 16 de enero de 2027';
   const VOLUMEN = 0.6;
   // ===========================
@@ -421,16 +421,21 @@
   pintarBoton();
 
   /* ================= Servicio de datos (Google) ================= */
+  async function leerJson(r) {
+    const texto = await r.text();
+    try { return JSON.parse(texto); }
+    catch (e) { throw new Error('El servicio de Google no respondió datos (¿publicaste la versión nueva?).'); }
+  }
   async function buscarInvitacion(codigo) {
     const r = await fetch(APP_URL + '?accion=buscar&inv=' + encodeURIComponent(codigo));
-    const d = await r.json();
+    const d = await leerJson(r);
     if (!d.ok) throw new Error(d.error || 'Error');
     return d.invitacion;
   }
   async function guardarRespuesta(datos) {
     // Se envía como texto para que el navegador no haga una consulta previa (CORS).
     const r = await fetch(APP_URL, { method: 'POST', body: JSON.stringify(Object.assign({ accion: 'guardar' }, datos)) });
-    const d = await r.json();
+    const d = await leerJson(r);
     if (!d.ok) throw new Error(d.error || 'No se pudo guardar. Intenta de nuevo.');
     return d.resultado;
   }
@@ -484,6 +489,8 @@
     } catch (e) {
       mostrarPaso('vCodigo');
       $('errCodigo').textContent = 'Hubo un problema de conexión. Recarga la página e intenta de nuevo.';
+      console.error('Detalle:', e);
+      if (new URLSearchParams(location.search).has('diagnostico')) $('errCodigo').textContent += ' [' + e.message + ']';
     }
   }
 
