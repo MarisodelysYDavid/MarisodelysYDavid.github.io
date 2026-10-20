@@ -73,7 +73,7 @@
       position: absolute; width: var(--ws); height: var(--hs);
       left: calc(50% - var(--ws) / 2); top: calc(50% - var(--hs) / 2 - 20px);
       cursor: pointer;   /* sin perspective/transform: así sus partes se intercalan con la presentación */
-      transition: opacity .7s ease, top .9s cubic-bezier(.5,0,.7,.4);
+      transition: top 1.1s cubic-bezier(.55,0,.75,.35);   /* baja sin desvanecerse */
     }
     .sobre:focus-visible { outline: 2px solid #c9a45c; outline-offset: 8px; border-radius: 6px; }
     .sobre > * { position: absolute; }
@@ -115,7 +115,7 @@
     #escena.abierto .solapa-sombra { transform: perspective(1000px) rotateX(180deg); z-index: 1; }
     #escena.abierto .sello, #escena.abierto .flores { opacity: 0; transform: scale(.6); animation: none; }
     #escena.abierto .indicacion { opacity: 0; }
-    #escena.afuera .sobre { opacity: 0; top: 110%; }
+    #escena.afuera .sobre { top: calc(100% + 40px); }   /* el sobre se va hacia abajo */
 
     /* ---------- Confirmación ---------- */
     #vConfirmar {
@@ -177,6 +177,8 @@
     .error { color: var(--error); font-size: 16px; min-height: 1.2em; margin-top: 12px; }
     .aviso { display: inline-block; margin-top: 16px; padding: 8px 16px; border-radius: 999px;
              background: rgba(169,191,177,.25); font-size: 16px; }
+    .limite { margin: 8px 0 0; font-size: 16px; color: var(--verde); font-style: italic; }
+    .limite::before { content: "⏳ "; font-style: normal; }
     .aparecer { animation: aparecer .5s ease both; }
     @keyframes aparecer { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
@@ -331,6 +333,7 @@
       <h1>Confirma tu asistencia</h1>
       <h2 id="nombre"></h2>
       <p class="reserva" id="cupo"></p>
+      <p class="limite" id="limite" hidden></p>
       <div id="previa" class="aviso" hidden></div>
 
       <div class="bloque">
@@ -369,6 +372,13 @@
 
       <div id="errForm" class="error" role="alert"></div>
       <button id="btnEnviar" class="principal" hidden>Confirmar</button>
+    </section>
+
+    <section id="vCerrado" class="aparecer" hidden>
+      <h1>Confirmación cerrada</h1>
+      <h2 id="cerradoNombre"></h2>
+      <p class="reserva" id="cerradoTexto"></p>
+      <div id="cerradoRespuesta" class="aviso" hidden></div>
     </section>
 
     <section id="vGracias" class="aparecer" hidden>
@@ -498,7 +508,7 @@
   }
 
   /* ================= Confirmación ================= */
-  const pasos = ['vCargando', 'vCodigo', 'vForm', 'vGracias'];
+  const pasos = ['vCargando', 'vCodigo', 'vForm', 'vCerrado', 'vGracias'];
   const mostrarPaso = v => { pasos.forEach(x => $(x).hidden = x !== v); window.scrollTo(0, 0); };
   let inv = null, asiste = null;
   const cuenta = { adultos: 0, ninos: 0 };
@@ -551,8 +561,23 @@
     }
   }
 
+  function pintarCerrado() {
+    $('cerradoNombre').textContent = inv.nombre;
+    $('cerradoTexto').textContent = 'El plazo para confirmar terminó el ' + inv.limite +
+      '. Si necesitas algo, comunícate directamente con los novios.';
+    const p = inv.respuesta;
+    $('cerradoRespuesta').hidden = !p;
+    if (p) $('cerradoRespuesta').textContent = p.asiste
+      ? 'Tu respuesta: asistirán ' + textoPersonas(p.adultos, p.ninos) + '. ¡Te esperamos!'
+      : 'Tu respuesta: no podrán asistir.';
+    mostrarPaso('vCerrado');
+  }
+
   function pintarFormulario() {
+    if (inv.cerrado) { pintarCerrado(); return; }
     $('nombre').textContent = inv.nombre;
+    $('limite').hidden = !inv.limite;
+    $('limite').textContent = inv.limite ? 'Por favor confirma a más tardar el ' + inv.limite + '.' : '';
     $('cupo').innerHTML = '';
     $('cupo').append('Hemos reservado para ti un cupo de ');
     const b = document.createElement('strong');
