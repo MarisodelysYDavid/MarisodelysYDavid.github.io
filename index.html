@@ -44,78 +44,85 @@
     .rama.lado   { top: 38%; right: -70px; width: 150px; transform: rotate(-110deg); opacity: .55; }
     .destellos { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
 
-    /* ---------- Presentación centrada en la pantalla ---------- */
-    #vPresentacion {
-      position: relative; z-index: 1;
-      height: 100vh; height: 100dvh; padding: 16px;
-      display: flex; align-items: center; justify-content: center;
+    /* ---------- Escena: sobre + presentación ---------- */
+    #escena {
+      position: fixed; inset: 0; z-index: 1;
+      --ws: min(340px, 84vw);                                            /* ancho del sobre */
+      --hs: calc(var(--ws) / 1.45);                                      /* alto del sobre */
+      --wm: min(calc(100vw - 32px), calc((100vh - 32px) * 2 / 3));       /* ancho final de la presentación */
     }
-    .marco { position: relative; aspect-ratio: 2 / 3;
-             width: min(100%, calc((100vh - 32px) * 2 / 3)); width: min(100%, calc((100dvh - 32px) * 2 / 3));
-             border-radius: 14px; overflow: hidden;
-             background: var(--crema-2); box-shadow: 0 10px 30px rgba(30,39,35,.15); }
+    @supports (height: 100dvh) {
+      #escena { --wm: min(calc(100vw - 32px), calc((100dvh - 32px) * 2 / 3)); }
+    }
+
+    /* Presentación (al final queda centrada en la pantalla) */
+    .marco {
+      position: absolute; z-index: 2;
+      width: var(--wm); height: calc(var(--wm) * 1.5);
+      left: calc(50% - var(--wm) / 2); top: calc(50% - var(--wm) * .75);
+      border-radius: 14px; overflow: hidden; background: var(--crema-2);
+      box-shadow: 0 10px 30px rgba(30,39,35,.15);
+      transform-origin: 0 0;
+      transition: transform .8s cubic-bezier(.3,.7,.2,1), clip-path .8s cubic-bezier(.3,.7,.2,1);
+    }
     .marco iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .marco.saliendo { transition-duration: 1s; }
 
-
-    /* ---------- Sobre (animación de apertura) ---------- */
-    #vSobre {
-      position: fixed; inset: 0; z-index: 8;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px;
-      padding: 24px; transition: opacity .7s ease, transform .7s ease, visibility .7s;
-    }
-    #vSobre.fuera { opacity: 0; transform: scale(1.08); visibility: hidden; }
+    /* Sobre */
     .sobre {
-      position: relative; width: min(340px, 82vw); aspect-ratio: 1.45; cursor: pointer;
-      perspective: 900px; filter: drop-shadow(0 14px 24px rgba(30,39,35,.25));
-      animation: flotar 3s ease-in-out infinite;
+      position: absolute; width: var(--ws); height: var(--hs);
+      left: calc(50% - var(--ws) / 2); top: calc(50% - var(--hs) / 2 - 20px);
+      cursor: pointer;   /* sin perspective/transform: así sus partes se intercalan con la presentación */
+      transition: opacity .7s ease, top .9s cubic-bezier(.5,0,.7,.4);
     }
     .sobre:focus-visible { outline: 2px solid #c9a45c; outline-offset: 8px; border-radius: 6px; }
     .sobre > * { position: absolute; }
-    .fondo   { inset: 0; background: #3e5f58; border-radius: 6px; }
-    .carta {
-      left: 7%; right: 7%; top: 8%; height: 84%; z-index: 2;
-      background: #fbf9f1; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.12);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      font-family: 'Great Vibes', cursive; color: #2f4a43; text-align: center;
-      transition: transform .9s cubic-bezier(.2,.8,.2,1) .45s;
+    .fondo {
+      inset: 0; z-index: 1; border-radius: 5px; background: #2b5850;
+      box-shadow: 0 16px 30px rgba(30,39,35,.28), 0 2px 6px rgba(30,39,35,.18);
     }
-    .carta b { font-weight: 400; font-size: clamp(22px, 7vw, 30px); line-height: 1.1; }
-    .carta small { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 11px; letter-spacing: .25em;
-                   color: #5f6b64; margin-top: 6px; }
     .bolsillo {
-      inset: 0; z-index: 3; border-radius: 6px; background: #4a6d65;
-      clip-path: polygon(0 0, 50% 57%, 100% 0, 100% 100%, 0 100%);
+      inset: 0; z-index: 3; border-radius: 5px;
+      background: linear-gradient(180deg, #30605a 0%, #2c5a53 100%);
+      clip-path: polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%);
     }
-    .bolsillo::after {
-      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 58%;
-      background: #52766e; clip-path: polygon(0 100%, 50% 8%, 100% 100%); border-radius: 0 0 6px 6px;
+    .pliegues { inset: 0; z-index: 3; width: 100%; height: 100%; pointer-events: none; }
+    .solapa-sombra {
+      left: 0; right: 0; top: 0; height: 58%; z-index: 4;
+      filter: drop-shadow(0 3px 3px rgba(0,0,0,.28));
+      transform-origin: top; transform: perspective(1000px) rotateX(0deg);
+      transition: transform .7s ease, z-index 0s .35s;
     }
     .solapa {
-      left: 0; right: 0; top: 0; height: 58%; z-index: 4;
-      background: #36544e; clip-path: polygon(0 0, 100% 0, 50% 100%);
-      transform-origin: top; transition: transform .7s ease, z-index 0s .35s;
+      position: absolute; inset: 0; border-radius: 5px 5px 0 0;
+      background: linear-gradient(180deg, #2a564e 0%, #2f5d56 100%);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
     }
     .sello {
-      left: 50%; top: 58%; z-index: 5; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%;
+      left: 50%; top: 58%; z-index: 6; width: 64px; height: 62px; margin: -31px 0 0 -32px;
+      border-radius: 49% 51% 47% 53% / 52% 47% 53% 48%;
       display: grid; place-items: center;
-      background: radial-gradient(circle at 35% 30%, #f1d58f, #c9a45c 55%, #9c7a35);
-      box-shadow: 0 3px 8px rgba(0,0,0,.3), inset 0 0 0 3px rgba(255,255,255,.18);
-      font-family: 'Great Vibes', cursive; font-size: 22px; color: #6b5220;
-      transition: opacity .3s ease, transform .3s ease;
+      background:
+        radial-gradient(circle at 50% 50%, transparent 52%, rgba(120,88,30,.55) 54%, transparent 60%),
+        radial-gradient(circle at 34% 28%, #fbe7a8 0%, #e2bf6a 28%, #c99a3e 58%, #9a7128 100%);
+      box-shadow: 0 3px 7px rgba(0,0,0,.35), inset 0 -2px 4px rgba(90,60,10,.35), inset 0 2px 3px rgba(255,245,210,.5);
+      font-family: 'Great Vibes', cursive; font-size: 21px; color: #7a5a1c;
+      text-shadow: 0 1px 0 rgba(255,240,200,.6), 0 -1px 0 rgba(90,60,10,.35);
+      transition: opacity .35s ease, transform .35s ease;
     }
-    .flores { left: 50%; top: 58%; z-index: 4; width: 90px; margin: -62px 0 0 -14px; pointer-events: none;
-              transition: opacity .3s ease; }
-    .indicacion { margin: 0; font-size: 20px; font-style: italic; color: #2f4a43; text-align: center;
-                  transition: opacity .3s ease; }
-    #vSobre.abierto .sobre { animation: none; }
-    #vSobre.abierto .solapa { transform: rotateX(180deg); z-index: 1; }
-    #vSobre.abierto .sello, #vSobre.abierto .flores { opacity: 0; transform: scale(.6); }
-    #vSobre.abierto .carta { transform: translateY(-82%); }
-    #vSobre.abierto .indicacion { opacity: 0; }
-    @keyframes flotar { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    .flores { left: 50%; top: 58%; z-index: 5; width: 74px; margin: -66px 0 0 -30px; pointer-events: none;
+              transition: opacity .35s ease, transform .35s ease; }
+    .indicacion {
+      position: absolute; left: 0; right: 0; top: calc(50% + var(--hs) / 2 + 6px); margin: 0; padding: 0 24px;
+      font-size: 20px; font-style: italic; color: #2f4a43; text-align: center; transition: opacity .3s ease;
+    }
+    .sello.latido { animation: latido 2.2s ease-in-out infinite; }
+    @keyframes latido { 0%,100% { transform: scale(1); } 50% { transform: scale(1.07); } }
 
-    #vPresentacion.entrando .marco { animation: entrar .8s ease both; }
-    @keyframes entrar { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+    #escena.abierto .solapa-sombra { transform: perspective(1000px) rotateX(180deg); z-index: 1; }
+    #escena.abierto .sello, #escena.abierto .flores { opacity: 0; transform: scale(.6); animation: none; }
+    #escena.abierto .indicacion { opacity: 0; }
+    #escena.afuera .sobre { opacity: 0; top: 110%; }
 
     /* ---------- Confirmación ---------- */
     #vConfirmar {
@@ -201,8 +208,7 @@
     @keyframes girar { to { transform: rotate(360deg); } }
 
     @media (prefers-reduced-motion: reduce) {
-      #musica.invitar, #musica.sonando .icono, .sobre, .aparecer { animation: none; }
-      .solapa, .carta, #vSobre { transition-duration: .01s; }
+      #musica.invitar, #musica.sonando .icono, .sello.latido, .aparecer { animation: none; }
     }
     @media (max-width: 420px) {
       body { font-size: 18px; }
@@ -259,30 +265,33 @@
     </g>
   </svg>
 
-  <!-- Sobre -->
-  <section id="vSobre" hidden>
+  <!-- Sobre + presentación -->
+  <section id="escena" hidden>
+    <div class="marco" id="marco"><iframe id="canva" title="Invitación" allowfullscreen allow="fullscreen"></iframe></div>
     <div class="sobre" id="sobre" role="button" tabindex="0" aria-label="Abrir tu invitación">
       <div class="fondo"></div>
-      <div class="carta"><b>David &amp;<br>Marisodelys</b><small>16 · 01 · 2027</small></div>
       <div class="bolsillo"></div>
-      <div class="solapa"></div>
-      <svg class="flores" viewBox="0 0 90 70" aria-hidden="true">
-        <g stroke="#a7b39b" stroke-width="1" fill="none"><path d="M14 66 C 20 40, 30 26, 46 10"/><path d="M14 66 C 26 50, 44 40, 70 30"/><path d="M14 66 C 18 48, 14 30, 20 14"/></g>
-        <g fill="#fffdf6" stroke="#e7e1cf" stroke-width=".6">
-          <circle cx="46" cy="10" r="4"/><circle cx="52" cy="14" r="3"/><circle cx="41" cy="15" r="3"/>
-          <circle cx="70" cy="30" r="4"/><circle cx="64" cy="26" r="3"/><circle cx="75" cy="25" r="2.6"/>
-          <circle cx="20" cy="14" r="3.6"/><circle cx="25" cy="19" r="2.6"/><circle cx="16" cy="20" r="2.6"/>
-          <circle cx="32" cy="28" r="2.6"/><circle cx="57" cy="36" r="2.4"/>
-        </g>
+      <svg class="pliegues" viewBox="0 0 145 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 100 L72.5 54 L145 100" fill="none" stroke="#ffffff" stroke-opacity=".13" stroke-width=".6"/>
+        <path d="M0 0 L72.5 54 L145 0" fill="none" stroke="#000000" stroke-opacity=".12" stroke-width=".6"/>
       </svg>
-      <div class="sello" aria-hidden="true">D&amp;M</div>
+      <div class="solapa-sombra"><div class="solapa"></div></div>
+      <svg class="flores" viewBox="0 0 74 70" aria-hidden="true">
+        <g stroke="#b9a26c" stroke-width="1" fill="none" stroke-linecap="round">
+          <path d="M30 66 C 30 50, 26 34, 18 18"/><path d="M30 66 C 34 48, 42 32, 56 20"/>
+          <path d="M30 66 C 32 52, 34 40, 36 10"/><path d="M28 40 L 14 34"/><path d="M38 34 L 50 30"/>
+        </g>
+        <g fill="#fffdf7" stroke="#e8e0cb" stroke-width=".5">
+          <circle cx="18" cy="17" r="3.4"/><circle cx="14" cy="21" r="2.6"/><circle cx="22" cy="21" r="2.4"/>
+          <circle cx="36" cy="9" r="3.6"/><circle cx="32" cy="13" r="2.6"/><circle cx="40" cy="13" r="2.6"/><circle cx="36" cy="5" r="2.2"/>
+          <circle cx="56" cy="19" r="3.4"/><circle cx="52" cy="23" r="2.4"/><circle cx="60" cy="23" r="2.4"/><circle cx="59" cy="15" r="2"/>
+          <circle cx="13" cy="33" r="2.6"/><circle cx="50" cy="29" r="2.4"/><circle cx="26" cy="27" r="2"/>
+        </g>
+        <g fill="#f3e9cf"><circle cx="18" cy="17" r="1"/><circle cx="36" cy="9" r="1"/><circle cx="56" cy="19" r="1"/></g>
+      </svg>
+      <div class="sello latido" aria-hidden="true">D&amp;M</div>
     </div>
     <p class="indicacion">Toca el sobre para abrir tu invitación</p>
-  </section>
-
-  <!-- Presentación de Canva -->
-  <section id="vPresentacion" hidden>
-    <div class="marco"><iframe id="canva" title="Invitación" allowfullscreen allow="fullscreen"></iframe></div>
   </section>
 
   <!-- Confirmación -->
@@ -575,27 +584,54 @@
   }
 
   if (desdeLink) {
-    // Llegó desde el sobre de su carta: animación del sobre y luego la presentación.
+    // Llegó desde el sobre de su carta: el sobre se abre y de él sale la presentación.
     guardar(desdeLink);
     document.body.classList.add('fijo');
     $('canva').src = urlCanva(CANVA_URL);   // se va cargando mientras ven el sobre
-    $('vSobre').hidden = false;
+    const escena = $('escena'), marco = $('marco'), sobre = $('sobre');
+    escena.hidden = false;
+
+    // Coloca la presentación "guardada" dentro del sobre (pequeña y recortada).
+    let dentro = null;
+    function medir() {
+      const m = { l: marco.offsetLeft, t: marco.offsetTop, w: marco.offsetWidth, h: marco.offsetHeight };
+      const e = { l: sobre.offsetLeft, t: sobre.offsetTop, w: sobre.offsetWidth, h: sobre.offsetHeight };
+      const s = (e.w * 0.84) / m.w;
+      const tx = e.l + e.w * 0.08 - m.l;
+      const ty = e.t + e.h * 0.10 - m.t;
+      const visible = (e.h * 0.84) / s;            // alto visible (en px sin escalar)
+      return { s, tx, ty, recorte: Math.max(0, m.h - visible), subir: e.h * 0.40 };
+    }
+    function colocar(subida) {
+      dentro = medir();
+      marco.style.transform = `translate(${dentro.tx}px, ${dentro.ty - (subida ? dentro.subir : 0)}px) scale(${dentro.s})`;
+      marco.style.clipPath = `inset(0 0 ${dentro.recorte}px 0 round 10px)`;
+    }
+    marco.style.transition = 'none';
+    colocar(false);
+    marco.offsetWidth;                            // aplica la posición inicial sin animar
+    marco.style.transition = '';
     let abierto = false;
+    window.addEventListener('resize', () => { if (!abierto) { marco.style.transition = 'none'; colocar(false); } });
+
     const abrir = () => {
       if (abierto) return;
       abierto = true;
-      reproducir();                          // el toque permite que suene la música
-      $('vSobre').classList.add('abierto');
-      setTimeout(() => {
-        $('vPresentacion').hidden = false;
-        $('vPresentacion').classList.add('entrando');
-        $('vSobre').classList.add('fuera');
+      reproducir();                              // el toque permite que suene la música
+      escena.classList.add('abierto');           // 1) se abre la solapa
+      setTimeout(() => colocar(true), 550);      // 2) la presentación asoma por arriba
+      setTimeout(() => {                          // 3) sale del sobre y crece hasta su lugar
+        marco.style.zIndex = 7;
+        marco.classList.add('saliendo');
+        marco.style.transform = 'none';
+        marco.style.clipPath = 'inset(0 0 0 0 round 14px)';
+        escena.classList.add('afuera');
         boton.hidden = !hayMusica;
       }, 1500);
-      setTimeout(() => { $('vSobre').hidden = true; }, 2300);
+      setTimeout(() => { sobre.hidden = true; marco.style.clipPath = ''; }, 2700);
     };
-    $('sobre').addEventListener('click', abrir);
-    $('sobre').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } });
+    sobre.addEventListener('click', abrir);
+    sobre.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } });
   } else {
     // Llegó desde el botón "Confirmar asistencia" de la presentación.
     abrirConfirmacion(guardado());
