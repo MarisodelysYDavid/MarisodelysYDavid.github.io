@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>David & Marisodelys · Nuestra boda</title>
+  <meta name="description" content="Invitación a la boda de David & Marisodelys · 16 de enero de 2027">
+  <meta property="og:title" content="David & Marisodelys · Nuestra boda">
+  <meta property="og:description" content="Sábado 16 de enero de 2027 · Tu invitación">
+  <meta name="theme-color" content="#fbf9f1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --crema: #fbf9f1;
+      --tinta: #1e2723;
+      --suave: #5f6b64;
+      --verde: #2f4a43;
+      --oro: #c9a45c;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--crema); overflow: hidden; }
+    body { font-family: 'Cormorant Garamond', Georgia, serif; color: var(--tinta); }
+
+    /* Página de Google (presentación + confirmación) ocupando toda la pantalla */
+    #app { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: var(--crema); }
+
+    /* ---------- Botón de música ---------- */
+    #musica {
+      position: fixed; z-index: 20; left: 14px; bottom: 14px;
+      bottom: calc(14px + env(safe-area-inset-bottom));
+      width: 46px; height: 46px; border-radius: 50%; border: 0; padding: 0;
+      background: rgba(47,74,67,.88); color: #fff; cursor: pointer;
+      display: grid; place-items: center; box-shadow: 0 4px 14px rgba(0,0,0,.2);
+    }
+    #musica svg { width: 22px; height: 22px; }
+    #musica.sonando svg.nota-icono { animation: girar 3s linear infinite; }
+    @keyframes girar { to { transform: rotate(360deg); } }
+    #musica .tachado { display: none; }
+    #musica .texto { display: none; margin-left: 8px; font: 600 16px 'Cormorant Garamond', Georgia, serif; }
+    #musica.invitar { width: auto; padding: 0 16px; border-radius: 999px; display: flex; align-items: center;
+                      animation: llamar 1.8s ease-in-out infinite; }
+    #musica.invitar .texto { display: inline; }
+    #musica.invitar .tachado { display: none !important; }
+    @keyframes llamar { 0%,100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+    #musica.pausada .tachado { display: block; }
+
+    @media (prefers-reduced-motion: reduce) {
+      #musica.sonando svg.nota-icono, #musica.invitar { animation: none; }
+    }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Página de confirmación (Google Apps Script) -->
+  <iframe id="app" title="Invitación" allow="fullscreen; autoplay" allowfullscreen></iframe>
+
+  <!-- Botón de música -->
+  <button id="musica" aria-label="Pausar música" hidden>
+    <svg class="nota-icono" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>
+    </svg>
+    <span class="texto">Música</span>
+    <svg class="tachado" viewBox="0 0 24 24" style="position:absolute" aria-hidden="true">
+      <path d="M4 4 L20 20" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <audio id="cancion" src="cancion.mp3" loop preload="auto"></audio>
+
+
+<script>
+  // ====== CONFIGURACIÓN ======
+  // URL de tu página de Google Apps Script (la que termina en /exec).
+  const APP_URL = 'https://script.google.com/macros/s/AKfycbxYcdKdHtAxquQ2PXg7A2iVrUn71HgAjbUK1yEKO31lGw8oFMrg780nBQlDOeSdjF-2Jw/exec';
+  const VOLUMEN = 0.6;
+  // ===========================
+
+  const $ = id => document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  const inv = (params.get('inv') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+  // Carga la página de Google de una vez, para que esté lista al abrir.
+  $('app').src = APP_URL + (inv ? '?inv=' + encodeURIComponent(inv) : '');
+
+  const audio = $('cancion');
+  const boton = $('musica');
+  let hayMusica = true;
+  audio.addEventListener('error', () => { hayMusica = false; boton.hidden = true; });
+
+  function pintarBoton() {
+    const sonando = !audio.paused;
+    boton.classList.toggle('sonando', sonando);
+    boton.classList.toggle('pausada', !sonando);
+    boton.setAttribute('aria-label', sonando ? 'Pausar música' : 'Reproducir música');
+  }
+  function reproducir() {
+    if (!hayMusica) return;
+    audio.volume = 0;
+    const p = audio.play();
+    if (p && p.catch) p.catch(() => { boton.classList.add('invitar'); pintarBoton(); });
+    // Sube el volumen suavemente.
+    let v = 0;
+    const t = setInterval(() => {
+      v = Math.min(VOLUMEN, v + 0.05);
+      audio.volume = v;
+      if (v >= VOLUMEN) clearInterval(t);
+    }, 120);
+  }
+  audio.addEventListener('play', () => { boton.classList.remove('invitar'); pintarBoton(); });
+  audio.addEventListener('pause', pintarBoton);
+  boton.addEventListener('click', () => { audio.paused ? reproducir() : audio.pause(); });
+
+  // Intenta poner la música al abrir. Si el navegador no lo permite,
+  // el botón queda con la etiqueta "Música" para que la activen con un toque.
+  if (hayMusica) boton.hidden = false;
+  pintarBoton();
+  if (inv) reproducir();
+</script>
+</body>
+</html>
