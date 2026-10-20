@@ -9,16 +9,22 @@
   <meta property="og:description" content="Sábado 16 de enero de 2027 · Tu invitación">
   <meta name="theme-color" content="#fbf9f1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <style>
     :root {
       --crema: #fbf9f1;
       --crema-2: #f3f1e6;
       --tinta: #1e2723;
+      --suave: #5f6b64;
       --verde: #2f4a43;
+      --verde-osc: #23382f;
+      --salvia-claro: #dfe8e0;
+      --oro: #c9a45c;
+      --error: #9b2c2c;
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; height: 100%; }
+    html, body { margin: 0; min-height: 100%; }
+    html, body.fijo { height: 100%; }
     body {
       background:
         radial-gradient(ellipse at 15% 10%, rgba(169,191,177,.28), transparent 55%),
@@ -26,8 +32,10 @@
         var(--crema);
       color: var(--tinta);
       font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 19px; line-height: 1.45;
       overflow: hidden;
     }
+    body.desplazable { overflow-y: auto; overflow-x: hidden; }
 
     /* ---------- Ramas de eucalipto decorativas ---------- */
     .rama { position: fixed; pointer-events: none; z-index: 0; width: 230px; height: auto; opacity: .95; }
@@ -109,8 +117,68 @@
     #vPresentacion.entrando .marco { animation: entrar .8s ease both; }
     @keyframes entrar { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
 
-    /* ---------- Confirmación (página de Google) a pantalla completa ---------- */
-    #confirmar { position: fixed; inset: 0; z-index: 5; width: 100%; height: 100%; border: 0; background: var(--crema); }
+    /* ---------- Confirmación ---------- */
+    #vConfirmar {
+      position: relative; z-index: 1;
+      max-width: 460px; margin: 0 auto; padding: 56px 20px 96px; text-align: center;
+    }
+    .monograma { font-family: 'Great Vibes', cursive; font-size: 30px; line-height: 1; margin: 0; }
+    .fecha { margin: 8px 0 0; font-size: 13px; letter-spacing: .28em; text-transform: uppercase; color: var(--suave); }
+    .separador { display: block; margin: 18px auto 22px; width: 120px; height: 14px; }
+    h1 { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: 46px; line-height: 1.05; margin: 0 0 6px; }
+    h2 { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: 40px; line-height: 1.1; margin: 0; color: var(--verde); }
+    .reserva { margin: 10px 0 0; font-size: 18px; color: var(--suave); }
+    .reserva strong { color: var(--tinta); font-weight: 600; }
+    .bloque { margin-top: 30px; }
+    .pregunta { font-size: 21px; font-style: italic; margin: 0 0 14px; }
+    .opciones { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .pildora {
+      flex: 1 1 170px; max-width: 210px; padding: 12px 16px; border-radius: 999px;
+      border: 1.5px solid var(--verde); background: transparent; color: var(--verde);
+      font: inherit; font-size: 18px; font-weight: 500; cursor: pointer;
+      transition: background .2s, color .2s, transform .1s;
+    }
+    .pildora:hover { background: rgba(47,74,67,.07); }
+    .pildora:active { transform: scale(.98); }
+    .pildora[aria-pressed="true"] { background: var(--verde); color: #fff; }
+    .contador {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 340px; margin: 0 auto 10px; padding: 10px 14px;
+      background: rgba(255,255,255,.65); border: 1px solid var(--salvia-claro); border-radius: 16px;
+    }
+    .contador .etiqueta { text-align: left; }
+    .contador .etiqueta b { display: block; font-size: 19px; font-weight: 600; }
+    .contador .etiqueta span { font-size: 14px; color: var(--suave); }
+    .control { display: flex; align-items: center; gap: 12px; }
+    .redondo {
+      width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--verde);
+      background: #fff; color: var(--verde); font-size: 22px; line-height: 1; cursor: pointer;
+      display: grid; place-items: center; padding: 0;
+    }
+    .redondo:disabled { opacity: .3; cursor: default; }
+    .numero { min-width: 26px; font-size: 26px; font-weight: 600; }
+    .nota { font-size: 15px; color: var(--suave); font-style: italic; margin: 6px 0 0; }
+    textarea {
+      width: 100%; min-height: 84px; resize: vertical; font: inherit; font-size: 18px; color: inherit;
+      padding: 12px 14px; border-radius: 14px; border: 1px solid var(--salvia-claro); background: rgba(255,255,255,.7);
+    }
+    textarea::placeholder { color: #9aa49e; font-style: italic; }
+    .principal {
+      display: inline-block; margin-top: 28px; min-width: 220px; padding: 14px 34px; border: 0; border-radius: 999px;
+      background: var(--verde); color: #fff; font: inherit; font-size: 20px; font-weight: 600; letter-spacing: .02em;
+      cursor: pointer; box-shadow: 0 6px 18px rgba(47,74,67,.22); transition: background .2s, transform .1s;
+    }
+    .principal:hover { background: var(--verde-osc); }
+    .principal:active { transform: scale(.98); }
+    .principal:disabled { opacity: .6; cursor: wait; }
+    .enlace { background: none; border: 0; padding: 0; margin-top: 22px; font: inherit; font-size: 17px;
+              color: var(--verde); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+    button:focus-visible, textarea:focus-visible { outline: 2px solid var(--oro); outline-offset: 3px; }
+    .error { color: var(--error); font-size: 16px; min-height: 1.2em; margin-top: 12px; }
+    .aviso { display: inline-block; margin-top: 16px; padding: 8px 16px; border-radius: 999px;
+             background: rgba(169,191,177,.25); font-size: 16px; }
+    .aparecer { animation: aparecer .5s ease both; }
+    @keyframes aparecer { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
     /* ---------- Botón de música ---------- */
     #musica {
@@ -133,10 +201,14 @@
     @keyframes girar { to { transform: rotate(360deg); } }
 
     @media (prefers-reduced-motion: reduce) {
-      #musica.invitar, #musica.sonando .icono, .sobre { animation: none; }
+      #musica.invitar, #musica.sonando .icono, .sobre, .aparecer { animation: none; }
       .solapa, .carta, #vSobre { transition-duration: .01s; }
     }
     @media (max-width: 420px) {
+      body { font-size: 18px; }
+      h1 { font-size: 40px; }
+      h2 { font-size: 36px; }
+      #vConfirmar { padding-top: 64px; }
       .rama { width: 170px; }
       .rama.lado { display: none; }
     }
@@ -213,8 +285,78 @@
     <div class="marco"><iframe id="canva" title="Invitación" allowfullscreen allow="fullscreen"></iframe></div>
   </section>
 
-  <!-- Confirmación (página de Google Apps Script) -->
-  <iframe id="confirmar" title="Confirmar asistencia" hidden></iframe>
+  <!-- Confirmación -->
+  <main id="vConfirmar" hidden>
+    <header>
+      <p class="monograma">David &amp; Marisodelys</p>
+      <p class="fecha">Sábado 16 de enero de 2027</p>
+      <svg class="separador" viewBox="0 0 120 14" aria-hidden="true">
+        <path d="M0 7 H48 M72 7 H120" stroke="#c9a45c" stroke-width="1"/>
+        <path d="M60 1 C 54 7, 54 7, 60 13 C 66 7, 66 7, 60 1 Z" fill="#c9a45c" opacity=".8"/>
+      </svg>
+    </header>
+
+    <section id="vCargando" class="aparecer">
+      <p class="reserva">Abriendo tu invitación…</p>
+    </section>
+
+    <section id="vCodigo" class="aparecer" hidden>
+      <h1>Confirma tu asistencia</h1>
+      <p class="reserva">Para confirmar, abre la invitación que te enviamos y toca el sobre. 💌</p>
+      <div id="errCodigo" class="error" role="alert"></div>
+    </section>
+
+    <section id="vForm" class="aparecer" hidden>
+      <h1>Confirma tu asistencia</h1>
+      <h2 id="nombre"></h2>
+      <p class="reserva" id="cupo"></p>
+      <div id="previa" class="aviso" hidden></div>
+
+      <div class="bloque">
+        <p class="pregunta">¿Nos acompañarás?</p>
+        <div class="opciones">
+          <button type="button" class="pildora" data-asiste="si" aria-pressed="false">Sí, ahí estaremos</button>
+          <button type="button" class="pildora" data-asiste="no" aria-pressed="false">No podremos ir</button>
+        </div>
+      </div>
+
+      <div id="cantidades" class="bloque" hidden>
+        <p class="pregunta">¿Cuántos asistirán?</p>
+        <div class="contador" id="filaAdultos">
+          <div class="etiqueta"><b>Adultos</b><span id="maxAdultos"></span></div>
+          <div class="control">
+            <button type="button" class="redondo" data-campo="adultos" data-paso="-1" aria-label="Quitar un adulto">−</button>
+            <span class="numero" id="numAdultos" aria-live="polite">0</span>
+            <button type="button" class="redondo" data-campo="adultos" data-paso="1" aria-label="Agregar un adulto">+</button>
+          </div>
+        </div>
+        <div class="contador" id="filaNinos">
+          <div class="etiqueta"><b>Niños</b><span id="maxNinos"></span></div>
+          <div class="control">
+            <button type="button" class="redondo" data-campo="ninos" data-paso="-1" aria-label="Quitar un niño">−</button>
+            <span class="numero" id="numNinos" aria-live="polite">0</span>
+            <button type="button" class="redondo" data-campo="ninos" data-paso="1" aria-label="Agregar un niño">+</button>
+          </div>
+        </div>
+        <p class="nota">Si alguien no podrá asistir, simplemente baja el número.</p>
+      </div>
+
+      <div id="bloqueMensaje" class="bloque" hidden>
+        <p class="pregunta"><label for="txtMensaje">Unas palabras para los novios</label></p>
+        <textarea id="txtMensaje" maxlength="500" placeholder="Opcional"></textarea>
+      </div>
+
+      <div id="errForm" class="error" role="alert"></div>
+      <button id="btnEnviar" class="principal" hidden>Confirmar</button>
+    </section>
+
+    <section id="vGracias" class="aparecer" hidden>
+      <h1 id="graciasTitulo"></h1>
+      <h2 id="graciasNombre"></h2>
+      <p class="reserva" id="graciasTexto"></p>
+      <button id="btnCambiar" class="enlace">Cambiar mi respuesta</button>
+    </section>
+  </main>
 
   <!-- Botón de música -->
   <button id="musica" aria-label="Reproducir música" hidden>
@@ -232,14 +374,15 @@
   // ====== CONFIGURACIÓN ======
   // Presentación de Canva (link público, termina en /watch o /view).
   const CANVA_URL = 'https://www.canva.com/design/DAHWWaOa-sQ/0DiQgV9iedVQ74QAtR65uQ/watch';
-  // Página de confirmación en Google Apps Script (termina en /exec).
+  // Servicio de datos en Google Apps Script (termina en /exec).
   const APP_URL = 'https://script.google.com/macros/s/AKfycbxYcdKdHtAxquQ2PXg7A2iVrUn71HgAjbUK1yEKO31lGw8oFMrg780nBQlDOeSdjF-2Jw/exec';
+  const FECHA = 'sábado 16 de enero de 2027';
   const VOLUMEN = 0.6;
   // ===========================
 
   const $ = id => document.getElementById(id);
 
-  // ---------- ¿Quién es? ----------
+  /* ================= ¿Quién es? ================= */
   // El link del sobre trae ?inv=CODIGO. Se guarda en este navegador para que,
   // al tocar "Confirmar asistencia" en la presentación, sepamos qué familia es.
   const CLAVE = 'boda_codigo';
@@ -248,40 +391,7 @@
   const guardar = c => { try { localStorage.setItem(CLAVE, c); } catch (e) {} };
   const guardado = () => { try { return limpiar(localStorage.getItem(CLAVE)); } catch (e) { return ''; } };
 
-  function urlCanva(u) {
-    const m = String(u).match(/^https:\/\/(www\.)?canva\.com\/design\/[^?#]+/);
-    return m ? m[0].replace(/\/(edit|watch|view)\/?$/, '') + '/view?embed' : '';
-  }
-
-  if (desdeLink) {
-    // Llegó desde el sobre: mostrar la presentación.
-    guardar(desdeLink);
-    $('canva').src = urlCanva(CANVA_URL);   // se va cargando mientras ven el sobre
-    $('vSobre').hidden = false;
-    let abierto = false;
-    const abrir = () => {
-      if (abierto) return;
-      abierto = true;
-      reproducir();                          // el toque permite que suene la música
-      $('vSobre').classList.add('abierto');
-      setTimeout(() => {
-        $('vPresentacion').hidden = false;
-        $('vPresentacion').classList.add('entrando');
-        $('vSobre').classList.add('fuera');
-        boton.hidden = !hayMusica;
-      }, 1500);
-      setTimeout(() => { $('vSobre').hidden = true; }, 2300);
-    };
-    $('sobre').addEventListener('click', abrir);
-    $('sobre').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } });
-  } else {
-    // Llegó desde el botón "Confirmar asistencia" de la presentación: mostrar la confirmación.
-    const codigo = guardado();
-    $('confirmar').src = APP_URL + (codigo ? '?inv=' + encodeURIComponent(codigo) : '');
-    $('confirmar').hidden = false;
-  }
-
-  // ---------- Música ----------
+  /* ================= Música ================= */
   const audio = $('cancion');
   const boton = $('musica');
   let hayMusica = true;
@@ -308,10 +418,181 @@
   audio.addEventListener('play', () => { boton.classList.remove('invitar'); pintarBoton(); });
   audio.addEventListener('pause', pintarBoton);
   boton.addEventListener('click', () => { audio.paused ? reproducir() : audio.pause(); });
-
   pintarBoton();
-  // En la confirmación el botón se ve desde el inicio; en la invitación aparece al abrir el sobre.
-  if (!desdeLink) boton.hidden = !hayMusica;
+
+  /* ================= Servicio de datos (Google) ================= */
+  async function buscarInvitacion(codigo) {
+    const r = await fetch(APP_URL + '?accion=buscar&inv=' + encodeURIComponent(codigo));
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || 'Error');
+    return d.invitacion;
+  }
+  async function guardarRespuesta(datos) {
+    // Se envía como texto para que el navegador no haga una consulta previa (CORS).
+    const r = await fetch(APP_URL, { method: 'POST', body: JSON.stringify(Object.assign({ accion: 'guardar' }, datos)) });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || 'No se pudo guardar. Intenta de nuevo.');
+    return d.resultado;
+  }
+
+  /* ================= Confirmación ================= */
+  const pasos = ['vCargando', 'vCodigo', 'vForm', 'vGracias'];
+  const mostrarPaso = v => { pasos.forEach(x => $(x).hidden = x !== v); window.scrollTo(0, 0); };
+  let inv = null, asiste = null;
+  const cuenta = { adultos: 0, ninos: 0 };
+
+  const plural = (n, s, p) => n + ' ' + (n === 1 ? s : p);
+  function textoPersonas(a, n) {
+    const partes = [];
+    if (a) partes.push(plural(a, 'adulto', 'adultos'));
+    if (n) partes.push(plural(n, 'niño', 'niños'));
+    return partes.join(' y ');
+  }
+
+  function minimo(campo) { return campo === 'adultos' && inv.adultos > 0 ? 1 : 0; }
+  function maximo(campo) { return campo === 'adultos' ? inv.adultos : inv.ninos; }
+  function pintarContadores() {
+    $('numAdultos').textContent = cuenta.adultos;
+    $('numNinos').textContent = cuenta.ninos;
+    document.querySelectorAll('.redondo').forEach(b => {
+      const c = b.dataset.campo, paso = Number(b.dataset.paso);
+      b.disabled = paso < 0 ? cuenta[c] <= minimo(c) : cuenta[c] >= maximo(c);
+    });
+  }
+  document.querySelectorAll('.redondo').forEach(b => b.addEventListener('click', () => {
+    const c = b.dataset.campo;
+    cuenta[c] = Math.min(maximo(c), Math.max(minimo(c), cuenta[c] + Number(b.dataset.paso)));
+    pintarContadores();
+  }));
+
+  async function abrirConfirmacion(codigo) {
+    document.body.classList.remove('fijo');
+    document.body.classList.add('desplazable');
+    $('vConfirmar').hidden = false;
+    boton.hidden = !hayMusica;
+    if (!codigo) { mostrarPaso('vCodigo'); return; }
+    mostrarPaso('vCargando');
+    try {
+      const r = await buscarInvitacion(codigo);
+      if (!r) {
+        mostrarPaso('vCodigo');
+        $('errCodigo').textContent = 'No encontramos tu invitación. Ábrela de nuevo desde el sobre.';
+        return;
+      }
+      inv = r;
+      pintarFormulario();
+    } catch (e) {
+      mostrarPaso('vCodigo');
+      $('errCodigo').textContent = 'Hubo un problema de conexión. Recarga la página e intenta de nuevo.';
+    }
+  }
+
+  function pintarFormulario() {
+    $('nombre').textContent = inv.nombre;
+    $('cupo').innerHTML = '';
+    $('cupo').append('Hemos reservado para ti un cupo de ');
+    const b = document.createElement('strong');
+    b.textContent = textoPersonas(inv.adultos, inv.ninos);
+    $('cupo').append(b, '.');
+
+    const p = inv.respuesta;
+    cuenta.adultos = p && p.asiste ? p.adultos : inv.adultos;
+    cuenta.ninos = p && p.asiste ? p.ninos : inv.ninos;
+    $('filaAdultos').hidden = inv.adultos === 0;
+    $('filaNinos').hidden = inv.ninos === 0;
+    $('maxAdultos').textContent = 'hasta ' + inv.adultos;
+    $('maxNinos').textContent = 'hasta ' + inv.ninos;
+    pintarContadores();
+    $('txtMensaje').value = p ? p.mensaje : '';
+
+    $('previa').hidden = !p;
+    if (p) {
+      $('previa').textContent = p.asiste
+        ? 'Ya confirmaste ' + plural(p.adultos + p.ninos, 'persona', 'personas') + '. Puedes cambiarlo aquí.'
+        : 'Nos dijiste que no podrás asistir. Puedes cambiarlo aquí.';
+    }
+    elegir(p ? (p.asiste ? 'si' : 'no') : null);
+    $('errForm').textContent = '';
+    mostrarPaso('vForm');
+  }
+
+  function elegir(valor) {
+    asiste = valor;
+    document.querySelectorAll('.pildora').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.asiste === valor)));
+    $('cantidades').hidden = valor !== 'si';
+    $('bloqueMensaje').hidden = valor === null;
+    $('btnEnviar').hidden = valor === null;
+  }
+  document.querySelectorAll('.pildora').forEach(b => b.addEventListener('click', () => elegir(b.dataset.asiste)));
+
+  $('btnEnviar').addEventListener('click', async () => {
+    const datos = {
+      codigo: inv.codigo,
+      asiste: asiste === 'si',
+      adultos: cuenta.adultos,
+      ninos: cuenta.ninos,
+      mensaje: $('txtMensaje').value,
+    };
+    if (datos.asiste && datos.adultos + datos.ninos === 0) {
+      $('errForm').textContent = 'Indica cuántas personas asistirán.';
+      return;
+    }
+    const btn = $('btnEnviar');
+    btn.disabled = true; btn.textContent = 'Enviando…';
+    $('errForm').textContent = '';
+    try {
+      const r = await guardarRespuesta(datos);
+      inv.respuesta = { asiste: r.asiste, adultos: r.adultos, ninos: r.ninos, mensaje: datos.mensaje };
+      $('graciasNombre').textContent = inv.nombre;
+      if (r.asiste) {
+        $('graciasTitulo').textContent = '¡Gracias por confirmar!';
+        $('graciasTexto').textContent = 'Te esperamos con mucha alegría: ' +
+          textoPersonas(r.adultos, r.ninos) + '. Nos vemos el ' + FECHA + '.';
+      } else {
+        $('graciasTitulo').textContent = '¡Gracias por avisarnos!';
+        $('graciasTexto').textContent = 'Lamentamos que no puedas acompañarnos. Te llevaremos en el corazón ese día.';
+      }
+      mostrarPaso('vGracias');
+    } catch (e) {
+      $('errForm').textContent = e.message || 'No se pudo guardar. Intenta de nuevo.';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Confirmar';
+    }
+  });
+  $('btnCambiar').addEventListener('click', pintarFormulario);
+
+  /* ================= Sobre + presentación ================= */
+  function urlCanva(u) {
+    const m = String(u).match(/^https:\/\/(www\.)?canva\.com\/design\/[^?#]+/);
+    return m ? m[0].replace(/\/(edit|watch|view)\/?$/, '') + '/view?embed' : '';
+  }
+
+  if (desdeLink) {
+    // Llegó desde el sobre de su carta: animación del sobre y luego la presentación.
+    guardar(desdeLink);
+    document.body.classList.add('fijo');
+    $('canva').src = urlCanva(CANVA_URL);   // se va cargando mientras ven el sobre
+    $('vSobre').hidden = false;
+    let abierto = false;
+    const abrir = () => {
+      if (abierto) return;
+      abierto = true;
+      reproducir();                          // el toque permite que suene la música
+      $('vSobre').classList.add('abierto');
+      setTimeout(() => {
+        $('vPresentacion').hidden = false;
+        $('vPresentacion').classList.add('entrando');
+        $('vSobre').classList.add('fuera');
+        boton.hidden = !hayMusica;
+      }, 1500);
+      setTimeout(() => { $('vSobre').hidden = true; }, 2300);
+    };
+    $('sobre').addEventListener('click', abrir);
+    $('sobre').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } });
+  } else {
+    // Llegó desde el botón "Confirmar asistencia" de la presentación.
+    abrirConfirmacion(guardado());
+  }
 </script>
 </body>
 </html>
